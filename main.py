@@ -1,21 +1,27 @@
 import os
 from dotenv import load_dotenv
 from google import genai
+import argparse
 
 load_dotenv()
 
 api_key = os.getenv("GEMINI_API_KEY")
 if api_key == None:
     raise RuntimeError("GEMINI_API_KEY not found")
-model = os.getenv("MODEL")
 
 
 def main():
     global model
-    model = model if model != None else "gemini-2.5-flash"
+    parser = argparse.ArgumentParser("Chatbot")
+    parser.add_argument("user_prompt", type=str, help="User prompt")
+    parser.add_argument(
+        "--model", type=str, help="Model defaults to gemini-2.5-flash", required=False
+    )
+    args = parser.parse_args()
+    model = args.model if args.model != None else "gemini-2.5-flash"
 
     client = genai.Client(api_key=api_key)
-    prompt = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
+    prompt = args.user_prompt
     response = client.models.generate_content(
         model=model,
         contents=prompt,
