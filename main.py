@@ -15,11 +15,28 @@ def main():
     model = model if model != None else "gemini-2.5-flash"
 
     client = genai.Client(api_key=api_key)
+    prompt = "Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum."
     response = client.models.generate_content(
         model=model,
-        contents="Why is Boot.dev such a great place to learn backend development? Use one paragraph maximum.",
+        contents=prompt,
     )
+    if (
+        response.usage_metadata == None
+        or response.usage_metadata.prompt_token_count == None
+    ):
+        raise RuntimeError(
+            "Somthing went wrong making request to GEMINI API. prompt token count is None"
+        )
+    if response.usage_metadata.candidates_token_count == None:
+        raise RuntimeError(
+            "Somthing went wrong making request to GEMINI API. candidates token count is None"
+        )
+    prompt_token_count = response.usage_metadata.prompt_token_count
+    response_token_count = response.usage_metadata.candidates_token_count
 
+    print(f"User prompt: {prompt}")
+    print(f"Prompt tokens: {prompt_token_count}")
+    print(f"Response tokens: {response_token_count}")
     if response.text != None:
         print(response.text)
     else:
