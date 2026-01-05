@@ -1,5 +1,5 @@
 import unittest
-from get_files_info import get_files_info
+from functions.get_files_info import get_files_info
 
 
 class TestGetFilesInfo(unittest.TestCase):
@@ -13,6 +13,7 @@ class TestGetFilesInfo(unittest.TestCase):
         self.assertRegex(result, r"- main\.py: file_size=\d+ bytes, is_dir=False")
         self.assertRegex(result, r"- tests\.py: file_size=\d+ bytes, is_dir=False")
         self.assertRegex(result, r"- pkg: file_size=\d+ bytes, is_dir=True")
+        print(result)
 
     def test_calculator_pkg(self):
         result = str.split(get_files_info("calculator", "pkg"), "\n")
@@ -25,6 +26,7 @@ class TestGetFilesInfo(unittest.TestCase):
             r"- calculator.py: file_size=\d+ bytes, is_dir=False",
         )
         self.assertRegex(joined_res, r"- render.py: file_size=\d+ bytes, is_dir=False")
+        print(joined_res)
 
     def test_calculator_bin(self):
         result = get_files_info("calculator", "/bin")
@@ -32,6 +34,7 @@ class TestGetFilesInfo(unittest.TestCase):
             result,
             "Result for '/bin' directory:\nError: Cannot list \"/bin\" as it is outside the permitted working directory",
         )
+        print(result)
 
     def test_calculator_parent_dir(self):
         result = get_files_info("calculator", "../")
@@ -39,6 +42,7 @@ class TestGetFilesInfo(unittest.TestCase):
             result,
             "Result for '../' directory:\nError: Cannot list \"../\" as it is outside the permitted working directory",
         )
+        print(result)
 
 
 if __name__ == "__main__":
