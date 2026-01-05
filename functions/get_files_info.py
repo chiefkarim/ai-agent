@@ -1,5 +1,7 @@
 import os
 
+from functions.utils import check_dir_within_working_dir_boundry
+
 
 def get_files_info(working_directory: str, directory: str = "."):
     try:
@@ -8,19 +10,16 @@ def get_files_info(working_directory: str, directory: str = "."):
             if directory == "."
             else f"Result for '{directory}' directory:\n"
         )
-        abs_working_dir = os.path.realpath(working_directory)
-        abs_target_dir = os.path.realpath(os.path.join(abs_working_dir, directory))
-        if not os.path.isdir(abs_target_dir):
-            return result + f'Error: "{directory}" is not a directory'
-
-        valid_target_dir = abs_working_dir == os.path.commonpath(
-            [abs_target_dir, abs_working_dir]
+        abs_target_dir, valid_target_dir = check_dir_within_working_dir_boundry(
+            working_directory, directory
         )
         if valid_target_dir != True:
             return (
                 result
                 + f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
             )
+        if not os.path.isdir(abs_target_dir):
+            return result + f'Error: "{directory}" is not a directory'
 
         with os.scandir(abs_target_dir) as it:
             for item in it:
