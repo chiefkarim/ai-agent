@@ -1,3 +1,4 @@
+import contextlib
 import os
 import unittest
 import tempfile
@@ -66,6 +67,17 @@ class TestWriteFile(unittest.TestCase):
         with open(target_file_valid, "r") as f:
             self.assertEqual("hello world", f.read(11))
         self.assertNotIn("Error:", result)
+        self.assertEqual(
+            result,
+            f'Successfully wrote to "{target_file}" ({len(content)} characters written)',
+        )
+
+    def test_should_work_fine_for_dirs_that_already_exist(self):
+        target_file = "pkg/morelorem.txt"
+        content = "lorem ipsum dolor sit amet"
+
+        result = write_file("calculator", target_file, content)
+
         self.assertEqual(
             result,
             f'Successfully wrote to "{target_file}" ({len(content)} characters written)',
